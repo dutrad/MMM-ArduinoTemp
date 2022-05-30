@@ -11,7 +11,7 @@ module.exports = NodeHelper.create({
   },
   
   job: function() {
-    var process = spawn("python3", ["/home/pi/MagicMirror/modules/MMM-PiTemp/getTemp.py"])
+    var process = spawn("python3", ["/home/pi/MagicMirror/modules/MMM-ArduinoTemp/getTemp.py"])
     process.stdout.on("data", (data)=>{
       console.log(data)
       this.sendSocketNotification("temperature", data.toString())

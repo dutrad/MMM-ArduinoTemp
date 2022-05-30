@@ -2,11 +2,6 @@ Module.register("MMM-ArduinoTemp", {
 	defaults: {
 		tempUnit: "C",
     	freq: 60000,
-    	high: 80,
-    	low: 70,
-    	highColor: "red",
-    	lowColor: "green",
-    	otherColor: "yellow",
 		label: "Room:"
 	},
 	
@@ -27,6 +22,9 @@ Module.register("MMM-ArduinoTemp", {
 				this.sendSocketNotification("get_Arduinotemp")
         		}, this.config.freq)
         		break
+				case "OPENWEATHER_FORECAST_WEATHER_UPDATE":
+				this.currentWeatherTemp = payload.current.temp;
+
     		}
 	},
 
@@ -34,21 +32,22 @@ Module.register("MMM-ArduinoTemp", {
 		switch (notification) {
 			case "temperature":
 				var e = document.getElementById("arduino_temp");
-				if (parseFloat(payload) <= this.config.low) {
-					e.style.color = this.config.lowColor;
-				} else if (parseFloat(payload) >= this.config.high) {
-					e.style.color = this.config.highColor;
-				} else {
-					e.style.color = this.config.otherColor;
-				}
-
 				var temp;
 				if (this.config.tempUnit === "C") {
 					temp = payload.toString() + "°C";
 				} else {
 					temp = (payload * (9 / 5) + 32).toFixed(1).toString() + "°F";
 				}
-				e.innerHTML = this.config.label + " " + temp;
+				
+				let comment = "";
+				let numberTemp = parseFloat(payload);
+				if(typeof this.currentWeatherTemp !== "undefined") {
+					let diffTemp = (this.currentWeatherTemp - numberTemp).toFixed(1);
+					let warmOrCold = (diffTemp > 0) ? 'warmer' : 'colder';
+					comment = `<br>${diffTemp} °C ${warmOrCold} outside`;
+				}
+
+				e.innerHTML = this.config.label + " " + temp + comment;
 				break;
 		}
   	},

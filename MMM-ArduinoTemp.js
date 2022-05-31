@@ -44,7 +44,7 @@ Module.register("MMM-ArduinoTemp", {
 				if(typeof this.currentWeatherTemp !== "undefined") {
 					let diffTemp = (this.currentWeatherTemp - numberTemp).toFixed(1);
 					let warmOrCold = (diffTemp > 0) ? 'warmer' : 'colder';
-					comment = `<br>${diffTemp} °C ${warmOrCold} outside`;
+					comment = `<br>${Math.abs(diffTemp)} °C ${warmOrCold} outside`;
 				}
 
 				e.innerHTML = this.config.label + " " + temp + comment;
